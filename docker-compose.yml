@@ -1,0 +1,43 @@
+version: '3'
+services:
+    nginx:
+        image: nginx
+        restart: always
+        ports:
+            - "18080:80"
+        # depends_on:
+        #    - api
+        volumes:
+            - "./nginx-defualt.conf:/etc/nginx/conf.d/default.conf:ro"
+            - "./ui-static:/app"
+    api:
+        build: 
+          context: ./workshop-mar2022-fastapi/.devcontainer
+          dockerfile: Dockerfile
+        restart: always
+        volumes:
+          - "./workshop-mar2022-fastapi:/app"
+        #depends_on:
+        #  pg:
+        #    condition: service_healthy
+        command: ${CMD:-/start.sh}
+        environment:
+          WORKER_CLASS: worker.Worker
+          FORWARDED_ALLOW_IPS: "*"
+          WORKERS_PER_CORE: ${WORKERS_PER_CORE:-0.5}
+          ROOT_PATH: ${ROOT_PATH:-}
+        tty: true
+        ports:
+          - "${API_PORT:-8000}:8000"
+
+    build_ui:
+        image: node:16
+        command: ["sh", "./build-ui.sh"]
+        working_dir: /app
+        user: 1000:1000
+        volumes:
+            - "./workshop-mar2022-vue3:/app"
+            - "./build-ui.sh:/app/build-ui.sh"
+            - "./ui-static:/static"
+        profiles:
+            - build_ui

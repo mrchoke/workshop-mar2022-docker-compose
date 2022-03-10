@@ -1,0 +1,6 @@
+[submodule "workshop-mar2022-vue3"]
+	path = workshop-mar2022-vue3
+	url = https://github.com/mrchoke/workshop-mar2022-vue3.git
+[submodule "workshop-mar2022-fastapi"]
+	path = workshop-mar2022-fastapi
+	url = https://github.com/mrchoke/workshop-mar2022-fastapi.git
