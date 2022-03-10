@@ -4,9 +4,9 @@ services:
         image: nginx
         restart: always
         ports:
-            - "18080:80"
-        # depends_on:
-        #    - api
+            - "${NGINX_PORT:-18080}:80"
+        depends_on:
+            - api
         volumes:
             - "./nginx-defualt.conf:/etc/nginx/conf.d/default.conf:ro"
             - "./ui-static:/app"
@@ -17,9 +17,9 @@ services:
         restart: always
         volumes:
           - "./workshop-mar2022-fastapi:/app"
-        #depends_on:
-        #  pg:
-        #    condition: service_healthy
+        depends_on:
+          pg:
+            condition: service_healthy
         command: ${CMD:-/start.sh}
         environment:
           WORKER_CLASS: worker.Worker
@@ -28,7 +28,45 @@ services:
           ROOT_PATH: ${ROOT_PATH:-}
         tty: true
         ports:
-          - "${API_PORT:-8000}:8000"
+          - "${API_PORT:-18081}:8000"
+
+    pg:
+      build: ./dockerfile/postgresql
+      restart: always
+      user: postgres
+      healthcheck:
+        test: ["CMD-SHELL", "pg_isready  -d postgres -U root"]
+        interval: 10s
+        timeout: 10s
+        retries: 5
+      volumes:
+        - "./pgdb:/var/lib/postgresql/data"
+        - "./db-backup:/db-backup"
+      environment:
+        - POSTGRES_PASSWORD=${DB_PASSWD:-123456}
+        - POSTGRES_USER=${DB_USER:-root}
+        - PGDATA=/var/lib/postgresql/data/pgdata
+        - POSTGRES_DB=${DB_NAME:-workshop}
+
+    pgadmin:
+      image: dpage/pgadmin4
+      environment:
+        FORWARDED_ALLOW_IPS: '"*"'
+        POSTGRES_USER: ${DB_USER:-root}
+        POSTGRES_PASSWORD: ${DB_PASSWD:-123456}
+        PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-workshop@mail.com}
+        PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWD:-123456}
+        PGADMIN_CONFIG_SERVER_MODE: ${PGADMIN_CONFIG_SERVER_MODE:-True}
+        PGADMIN_CONFIG_ENABLE_PSQL: ${PGADMIN_CONFIG_ENABLE_PSQL:-True}
+
+      volumes:
+        - "./pgadmin:/var/lib/pgadmin"
+      depends_on:
+          pg:
+            condition: service_healthy
+      ports:
+        - "${PGADMIN_PORT:-18082}:80"
+      restart: unless-stopped
 
     build_ui:
         image: node:16
