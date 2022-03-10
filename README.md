@@ -10,6 +10,8 @@ Workshop Mar 2022  docker-compose  น้องฝึกงาน
 
 git clone  https://github.com/mrchoke/workshop-mar2022-docker-compose.git
 
+cd workshop-mar2022-docker-compose
+
 ```
 
 ### FastAPI
@@ -17,6 +19,8 @@ git clone  https://github.com/mrchoke/workshop-mar2022-docker-compose.git
 ```bash
 
 git clone  https://github.com/mrchoke/workshop-mar2022-fastapi.git
+
+cd workshop-mar2022-docker-compose
 
 ```
 
