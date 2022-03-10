@@ -1,1 +1,5 @@
 /ui-static
+/pgdb
+/pgadmin
+/db-backup
+.DS_Store
