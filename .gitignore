@@ -3,3 +3,4 @@
 /pgadmin
 /db-backup
 .DS_Store
+.env
