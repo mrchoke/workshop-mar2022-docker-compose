@@ -65,7 +65,7 @@ git clone  https://github.com/mrchoke/workshop-mar2022-vue3.git --config core.au
 ## เนื้อหา
 
 
-### YourTube
+### YouTube
 
 [![YouTube ประกอบเนื้อหา](https://img.youtube.com/vi/XitTJ40OCxo/maxresdefault.jpg)](https://youtu.be/XitTJ40OCxo)
 
